@@ -1,0 +1,80 @@
+plugins {
+  id 'application'
+  id 'eclipse'
+  id 'com.google.cloud.tools.jib' version '2.4.0'
+}
+
+repositories {
+  jcenter()
+}
+
+dependencies {
+  configurations.implementation.canBeResolved = true
+  version = '0.1.0'
+  implementation 'org.apache.johnzon:johnzon:1.2.7'
+  implementation 'org.apache.johnzon:johnzon-core:1.2.7'
+  implementation 'org.apache.johnzon:johnzon-mapper:1.2.7'
+  implementation 'org.apache.johnzon:johnzon-jsonb:1.2.7'
+  implementation 'javax.json.bind:javax.json.bind-api:1.0'
+  implementation 'javax.json:javax.json-api:1.1.4'
+
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+}
+
+application {
+  mainClassName = "cyou.obliquerays.api.msg.MessagingProcess"
+}
+
+test {
+  useJUnitPlatform()
+}
+
+java {
+  withSourcesJar()
+  withJavadocJar()
+}
+
+jar {
+  manifest {
+    attributes('Implementation-Title': project.name,
+               'Implementation-Version': project.version)
+  }
+}
+
+tasks.withType(JavaCompile) {
+  options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc) {
+  options {
+    memberLevel = JavadocMemberLevel.PRIVATE
+    charSet = 'UTF-8'
+    encoding = 'UTF-8'
+    docEncoding = 'UTF-8'
+    links("https://docs.oracle.com/javase/jp/11/docs/api/")
+  }
+}
+
+tasks.withType(Wrapper) {
+  gradleVersion = '6.5.1'
+}
+
+copy {
+  from configurations.implementation
+  into 'src/main/jib'
+}
+
+task delJib(type: Delete) {
+  delete 'src/main/jib', '*'
+  followSymlinks = true
+}
+
+jib {
+  from {
+    image = 'adoptopenjdk/openjdk11:jre-11.0.7_10-alpine'
+  }
+  to {
+    image = 'msg-transfer' // YOUR_IMAGE_NAME
+  }
+}
