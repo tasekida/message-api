@@ -4,7 +4,6 @@
 # Ignore Gradle build output directory
 bin
 build
-k8s
 
 # Compiled class file
 *.class
