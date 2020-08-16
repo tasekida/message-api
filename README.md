@@ -89,6 +89,3 @@ CTRL + C
 
 このプロジェクトは Apache License, Version 2.0 ライセンスの元にライセンスされています。 詳細は [LICENSE.md](LICENSE.md) をご覧ください。
 
-## 謝辞
-
-* K8s WG
