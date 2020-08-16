@@ -1,0 +1,62 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: message-api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: message-api
+  name: message-transfer
+  labels:
+    app: message-transfer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: message-transfer
+  template:
+    metadata:
+      labels:
+        app: message-transfer
+    spec:
+      containers:
+      - name: msg-transfer
+        image: msg-transfer ### YOUR_IMAGE_NAME
+        envFrom:
+        - configMapRef:
+            name: cm-msg-transfer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: message-api
+  name: message-api
+  labels:
+    app: message-transfer
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: message-transfer
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: message-api
+  name: cm-msg-transfer
+  labels:
+    app: message-transfer
+data: ### Setting for your environment
+  SLACK_WEBHOOK_CONTEXT: /api/fromSlack
+  SLACK_TARGET_CHANNEL: XXXXX
+  SLACK_TARGET_USER: XXXXX
+  SLACK_API_URL: https://hooks.slack.com/services/XXXXX
+  LINE_WEBHOOK_CONTEXT: /api/fromLine
+  LINE_WEBHOOK_CHANNEL_SECRET: XXXXX
+  LINE_TARGET_GROUP_ID: XXXXX
+  LINE_TARGET_USER_ID: XXXXX
+  LINE_API_URL: https://api.line.me/v2/bot/message/push
+  LINE_API_TOKEN: XXXXX

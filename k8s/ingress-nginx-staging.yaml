@@ -1,0 +1,24 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: message-api
+  name: message-api-ingress
+  labels:
+    app: message-transfer
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+spec:
+  tls:
+  - hosts:
+    - api.example.com ### Setting your FQDN
+    secretName: api-example-com-tls ### Setting your Secret name
+  rules:
+  - host: api.example.com ### Setting your FQDN
+    http:
+      paths:
+      - path: /api/
+        backend:
+          serviceName: message-api
+          servicePort: 8080
