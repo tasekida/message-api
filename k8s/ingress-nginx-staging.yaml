@@ -18,7 +18,10 @@ spec:
   - host: api.example.com ### Setting your FQDN
     http:
       paths:
-      - path: /api/
+      - path: "/api/"
+        pathType: "Prefix"
         backend:
-          serviceName: message-api
-          servicePort: 8080
+          service:
+            name: message-api
+            port: 
+              number: 8080
