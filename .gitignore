@@ -1,17 +1,19 @@
+.git
+
 # Ignore Gradle project-specific cache directory
 .gradle
 
 # Ignore Gradle build output directory
+.settings
+
 bin
 build
-.settings
 
 .project
 .classpath
 *.class
 *.log
 
-*.jar
 *.war
 *.nar
 *.ear

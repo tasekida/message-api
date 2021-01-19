@@ -1,25 +1,36 @@
 plugins {
   id 'application'
-  id 'eclipse'
-  id 'com.google.cloud.tools.jib' version '2.6.0'
+  id 'com.google.cloud.tools.jib' version '2.7.1'
+  id 'de.jjohannes.extra-java-module-info' version '0.4'
+//  id 'org.javamodularity.moduleplugin' version '1.7.0'
+}
+
+extraJavaModuleInfo {
+  automaticModule('geronimo-json_1.1_spec-1.5.jar', 'javax.json')
+  automaticModule('geronimo-jsonb_1.0_spec-1.4.jar', 'javax.jsonb')
+  automaticModule('johnzon-core-1.2.9.jar', 'johnzon.core')
+  automaticModule('johnzon-jsonb-1.2.9.jar', 'johnzon.jsonb')
+  automaticModule('johnzon-mapper-1.2.9.jar', 'johnzon.mapper')
 }
 
 repositories {
+  google()
   jcenter()
+  mavenCentral()
 }
 
 dependencies {
   configurations.implementation.canBeResolved = true
   version = '0.1.0'
-  implementation 'org.apache.johnzon:johnzon:1.2.7'
-  implementation 'org.apache.johnzon:johnzon-core:1.2.7'
-  implementation 'org.apache.johnzon:johnzon-mapper:1.2.7'
-  implementation 'org.apache.johnzon:johnzon-jsonb:1.2.7'
-  implementation 'javax.json.bind:javax.json.bind-api:1.0'
-  implementation 'javax.json:javax.json-api:1.1.4'
+  implementation 'org.apache.johnzon:johnzon-core:1.2.9'
+  implementation 'org.apache.johnzon:johnzon-mapper:1.2.9'
+  implementation 'org.apache.johnzon:johnzon-jsonb:1.2.9'
+  implementation 'org.apache.geronimo.specs:geronimo-json_1.1_spec:1.5'
+  implementation 'org.apache.geronimo.specs:geronimo-jsonb_1.0_spec:1.4'
 
-  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
-  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
 }
 
 application {
@@ -33,6 +44,7 @@ test {
 java {
   withSourcesJar()
   withJavadocJar()
+  modularity.inferModulePath = true
 }
 
 jar {
@@ -57,7 +69,7 @@ tasks.withType(Javadoc) {
 }
 
 tasks.withType(Wrapper) {
-  gradleVersion = '6.7'
+  gradleVersion = '6.8'
 }
 
 copy {
