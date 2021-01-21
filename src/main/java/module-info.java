@@ -17,9 +17,9 @@ module message.api {
 
 	requires javax.json;
 	requires javax.jsonb;
-//	requires java.json.bind;
-	requires java.net.http;
 	requires johnzon.jsonb;
+	//	requires java.json.bind;
+	requires java.net.http;
 	requires transitive java.logging;
 	requires transitive jdk.httpserver;
 }
