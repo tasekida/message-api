@@ -29,11 +29,9 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.json.bind.Jsonb;
-
-import org.apache.johnzon.jsonb.JohnzonBuilder;
-
 import cyou.obliquerays.api.msg.slack.model.SlackIncomingWebhookPayload;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
 
 /**
  * このアプリケーションからSlackへメッセージを送信する処理
@@ -73,7 +71,7 @@ public class SlackIncomingWebhook {
      */
     public String convertPayload(SlackIncomingWebhookPayload _message) {
         String retStr = "{}";
-        try (Jsonb jsonb = new JohnzonBuilder().build()) {
+        try (Jsonb jsonb = JsonbBuilder.create()) {
             retStr = jsonb.toJson(_message);
         } catch (Exception e) {
             logger.log(Level.INFO, "SlackIncomingWebhookApiへの送信情報作成に失敗", e);

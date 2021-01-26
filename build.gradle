@@ -1,28 +1,25 @@
 plugins {
     id 'application'
+    id 'eclipse'
     id 'com.google.cloud.tools.jib' version '2.7.1'
     id 'org.javamodularity.moduleplugin' version '1.7.0'
 }
 
-wrapper.gradleVersion = '6.8'
+wrapper.gradleVersion = '6.8.1'
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 modularity.improveEclipseClasspathFile()
 
 repositories {
-    google()
     jcenter()
+    google()
     mavenCentral()
 }
 
 dependencies {
     configurations.implementation.canBeResolved = true
 
-    implementation 'org.apache.johnzon:johnzon-core:1.2.9'
-	implementation 'org.apache.johnzon:johnzon-mapper:1.2.9'
-    implementation 'org.apache.johnzon:johnzon-jsonb:1.2.9'
-    implementation 'org.apache.geronimo.specs:geronimo-json_1.1_spec:1.5'
-    implementation 'org.apache.geronimo.specs:geronimo-jsonb_1.0_spec:1.4'
+    implementation 'org.eclipse:yasson:2.0.1'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
@@ -53,17 +50,17 @@ jar {
         attributes('Automatic-Module-Name': moduleName)
     }
     doLast {
-        file('gradle/libs').mkdirs()
+        file('gradle/release').mkdirs()
         delete {
-            delete files('gradle/libs')
+            delete files('gradle/release')
         }
         copy {
             from configurations.implementation
-            into 'gradle/libs'
+            into 'gradle/release'
         }
         copy{
             from jar
-            into 'gradle/libs'
+            into 'gradle/release'
         }
         def currentRevision = buildRevision.toInteger() + 1
         def File propsFile = file('gradle.properties')
@@ -80,10 +77,8 @@ tasks.withType(Javadoc) {
     failOnError = false
     options {
         memberLevel = JavadocMemberLevel.PRIVATE
-        charSet = 'UTF-8'
         encoding = 'UTF-8'
-        docEncoding = 'UTF-8'
-        links("https://docs.oracle.com/javase/jp/11/docs/api/")
+        links("http://docs.oracle.com/javase/jp/11/docs/api/")
     }
 }
 
@@ -92,14 +87,14 @@ test {
 }
 
 jib {
+	version = buildMajor + '.' + buildMinor + '.' + buildRevision
     extraDirectories {
-        paths = 'gradle/libs'
+        paths = 'gradle/release'
     }
     from {
-//        image = 'adoptopenjdk/openjdk11:jre-11.0.7_10-alpine'
-        image = 'openjdk/openjdk:11-jre-slim'
+        image = 'openjdk:11-jre-slim'
     }
     to {
-        image = 'taseki01/msg-transfer' // YOUR_IMAGE_NAME
+        image = 'msg-transfer:' + version // YOUR_IMAGE_NAME
     }
 }

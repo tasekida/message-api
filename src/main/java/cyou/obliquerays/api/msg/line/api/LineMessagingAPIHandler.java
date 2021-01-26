@@ -31,12 +31,11 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.json.bind.Jsonb;
 import javax.net.ssl.SSLContext;
 
-import org.apache.johnzon.jsonb.JohnzonBuilder;
-
 import cyou.obliquerays.api.msg.line.model.LineMessagingApi;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
 
 /**
  * このアプリケーションからLineへメッセージを送信する処理
@@ -82,7 +81,7 @@ public class LineMessagingAPIHandler {
      */
     public String convertPayload(LineMessagingApi _message) {
         String retStr = "{}";
-        try (Jsonb jsonb = new JohnzonBuilder().build()) {
+        try (Jsonb jsonb = JsonbBuilder.create()) {
             retStr = jsonb.toJson(_message);
         } catch (Exception e) {
             logger.log(Level.INFO, "SlackIncomingWebhookApiへの送信情報作成に失敗", e);

@@ -15,10 +15,9 @@ module message.api {
 	exports cyou.obliquerays.api.msg;
 	exports cyou.obliquerays.api.msg.slack.api;
 
-	requires javax.json;
-	requires javax.jsonb;
-	requires johnzon.jsonb;
-	//	requires java.json.bind;
+	requires jakarta.json;
+	requires jakarta.json.bind;
+	requires org.eclipse.yasson;
 	requires java.net.http;
 	requires transitive java.logging;
 	requires transitive jdk.httpserver;
