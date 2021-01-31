@@ -1,15 +1,15 @@
-apiVersion: skaffold/v1
+apiVersion: skaffold/v2beta11
 kind: Config
 metadata:
   name: msg-transfer
 build:
   artifacts:
-  - image: msg-transfer ### YOUR_IMAGE_NAME
+  - image: msg-transfer
     jib: {
       type: gradle
     }
-  local:
-    skipPush: true
+  # local:
+  #   skipPush: true
 deploy:
   kubectl:
     manifests:
