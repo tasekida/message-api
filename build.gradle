@@ -88,10 +88,10 @@ compileTestJava {
 
 test {
 //    onlyIf { project.hasProperty('goTest') }
-    useJUnitPlatform()
     moduleOptions {
         runOnClasspath = true
     }
+    useJUnitPlatform()
 }
 
 jib {

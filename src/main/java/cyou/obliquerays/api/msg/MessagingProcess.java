@@ -18,6 +18,8 @@ package cyou.obliquerays.api.msg;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
+import java.nio.file.Path;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -28,22 +30,34 @@ import com.sun.net.httpserver.HttpServer;
 
 import cyou.obliquerays.api.msg.line.webhook.LineWebhookHandler;
 import cyou.obliquerays.api.msg.slack.webhook.SlackReceivingWebhookHandler;
+import cyou.obliquerays.status.LockFileStatus;
 
 /**
  * メッセージAPIプロセスのエントリーポイント
  */
 public class MessagingProcess {
-    //// Fields
-    /**
-     * ロガー
-     */
+    /** ロガー */
     private static final Logger logger = Logger.getLogger(MessagingProcess.class.getName());
 
-    //// Methods
+    private ExecutorService executorService = Executors.newWorkStealingPool();
+
+    public MessagingProcess() throws IOException {
+		Path lockFile = Path.of(this.getClass().getName());
+    	try {
+			LockFileStatus lockFileStatus =
+					new LockFileStatus(Thread.currentThread(), lockFile);
+			executorService.execute(lockFileStatus);
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, "プロセス実行時存在ファイルの管理に失敗#" + lockFile, e);
+			throw e;
+		}
+    }
+
     /**
      * メッセージAPIサーバー起動
+     * @throws Throwable
      */
-    private void startServer() {
+    private void startServer() throws Throwable {
         HttpServer server = null;
         try {
             server = HttpServer.create(new InetSocketAddress(8080), 0);
@@ -51,28 +65,38 @@ public class MessagingProcess {
             server.createContext(System.getenv("SLACK_WEBHOOK_CONTEXT"), new SlackReceivingWebhookHandler());
             // LineWebhook
             server.createContext(System.getenv("LINE_WEBHOOK_CONTEXT"), new LineWebhookHandler());
-            server.setExecutor(Executors.newWorkStealingPool());
+            server.setExecutor(this.executorService);
             server.start();
+            logger.log(Level.INFO, "サーバー起動");
             while (true) {
-                TimeUnit.SECONDS.sleep(30);
+                TimeUnit.SECONDS.sleep(60L);
             }
-        } catch (Exception e) {
-            server.stop(0);
-            logger.log(Level.SEVERE, "サーバー停止", e);
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, "サーバー継続不可", e);
+            throw e;
+        } finally {
+            if (null != server) {
+                server.stop(0);
+            }
+            logger.log(Level.INFO, "サーバー停止");
         }
     }
 
-    //// Entry Point
     /**
      * メッセージAPIプロセスのエントリーポイント
      * @param args プロセスの引数
-     * @throws IOException リソースからlogging.propertiesの読み取りに失敗
      */
-    public static void main(String[] args) throws IOException {
-        try (InputStream resource = ClassLoader.getSystemResourceAsStream("logging.properties")) {
+    public static void main(String[] args) {
+    	int returnCode = 1;
+    	try (InputStream resource = ClassLoader.getSystemResourceAsStream("logging.properties")) {
             LogManager.getLogManager().readConfiguration(resource);
+            MessagingProcess process = new MessagingProcess();
+            process.startServer();
+            returnCode = 0;
+        } catch (Throwable t) {
+        	logger.log(Level.SEVERE, "エラー終了", t);
         }
-        MessagingProcess process = new MessagingProcess();
-        process.startServer();
+        logger.log(Level.CONFIG, "停止直前#returnCode=" + returnCode);
+        System.exit(returnCode);
     }
 }
