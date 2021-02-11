@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.nio.file.Path;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +44,7 @@ public class MessagingProcess {
     private ExecutorService executorService = Executors.newWorkStealingPool();
 
     public MessagingProcess() throws IOException {
-		Path lockFile = Path.of(this.getClass().getName());
+		Path lockFile = Path.of(this.getClass().getSimpleName() + ".lock");
     	try {
 			LockFileStatus lockFileStatus =
 					new LockFileStatus(Thread.currentThread(), lockFile);
@@ -55,9 +57,11 @@ public class MessagingProcess {
 
     /**
      * メッセージAPIサーバー起動
-     * @throws Throwable
+     * @throws IOException サーバー起動失敗
+     * @throws NoSuchAlgorithmException 暗号アルゴリズムの未サポート
+     * @throws KeyManagementException SSLContextの初期化に失敗
      */
-    private void startServer() throws Throwable {
+    private void startServer() throws IOException, NoSuchAlgorithmException, KeyManagementException {
         HttpServer server = null;
         try {
             server = HttpServer.create(new InetSocketAddress(8080), 0);
@@ -71,9 +75,17 @@ public class MessagingProcess {
             while (true) {
                 TimeUnit.SECONDS.sleep(60L);
             }
-        } catch (Throwable e) {
-            logger.log(Level.SEVERE, "サーバー継続不可", e);
-            throw e;
+        } catch (IOException e) {
+        	logger.log(Level.SEVERE, "サーバー起動失敗", e);
+        	throw e;
+		} catch (KeyManagementException e) {
+        	logger.log(Level.SEVERE, "SSLContextの初期化に失敗", e);
+        	throw e;
+		} catch (NoSuchAlgorithmException e) {
+			logger.log(Level.SEVERE, "暗号アルゴリズムの未サポート", e);
+			throw e;
+		} catch (InterruptedException e) {
+        	logger.log(Level.WARNING, "サーバー継続不可", e);
         } finally {
             if (null != server) {
                 server.stop(0);

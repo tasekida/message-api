@@ -22,15 +22,12 @@ import java.util.List;
  * Line Webhook イベントオブジェクト
  */
 public class LineWebhook {
-    //// Fields
-    /**
-     * Webhookイベントを受信すべきボットのユーザーID
-     */
-    private String destination;
-    /**
-     * Webhookイベントのリスト
-     */
-    private final List<LineWebhookEvent> events = new ArrayList<>(0);
+
+    /** Webhookイベントを受信すべきボットのユーザーID */
+	private String destination;
+
+    /** Webhookイベントのリスト */
+	private final List<LineWebhookEvent> events = new ArrayList<>(0);
 
     //// Getters
     /**

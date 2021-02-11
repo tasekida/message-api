@@ -31,6 +31,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import javax.json.bind.Jsonb;
+
+import org.apache.johnzon.jsonb.JohnzonBuilder;
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -38,8 +42,6 @@ import cyou.obliquerays.api.msg.line.api.LineMessagingAPIHandler;
 import cyou.obliquerays.api.msg.line.model.LineMessagingApi;
 import cyou.obliquerays.api.msg.line.model.LineMessagingApiMessage;
 import cyou.obliquerays.api.msg.slack.model.SlackReceivingWebhook;
-import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
 
 /**
  * Slackからこのアプリケーションへメッセージを受信する処理
@@ -91,7 +93,7 @@ public class SlackReceivingWebhookHandler implements HttpHandler {
             logger.log(Level.SEVERE, "Slackからメッセージの受信に失敗", e);
         }
 
-        try (Jsonb jsonb = JsonbBuilder.create()) {
+        try (Jsonb jsonb = new JohnzonBuilder().build()) {
             SlackReceivingWebhook slack = jsonb.fromJson(body, SlackReceivingWebhook.class);
             LineMessagingApi line = this.slackToLine(slack);
             if (null != line) {
