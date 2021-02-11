@@ -24,6 +24,10 @@ spec:
       containers:
       - name: msg-transfer
         image: msg-transfer ### YOUR_IMAGE_NAME
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sh", "-c", "rm -f MessagingProcess.lock; sleep 5"]
         envFrom:
         - configMapRef:
             name: cm-msg-transfer

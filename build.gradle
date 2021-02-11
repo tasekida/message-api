@@ -19,9 +19,11 @@ repositories {
 dependencies {
     configurations.implementation.canBeResolved = true
 
-    implementation 'org.eclipse:yasson:2.0.1'
+    implementation 'org.apache.geronimo.specs:geronimo-json_1.1_spec:1.5'
+    implementation 'org.apache.geronimo.specs:geronimo-jsonb_1.0_spec:1.4'
+    implementation 'org.apache.johnzon:johnzon-jsonb:1.2.10'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 

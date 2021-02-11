@@ -33,6 +33,9 @@ import java.util.stream.Collectors;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.json.bind.Jsonb;
+
+import org.apache.johnzon.jsonb.JohnzonBuilder;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -41,8 +44,6 @@ import cyou.obliquerays.api.msg.line.model.LineWebhook;
 import cyou.obliquerays.api.msg.line.model.LineWebhookEvent;
 import cyou.obliquerays.api.msg.slack.api.SlackIncomingWebhook;
 import cyou.obliquerays.api.msg.slack.model.SlackIncomingWebhookPayload;
-import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
 
 /**
  * Lineからこのアプリケーションへメッセージを受信する処理
@@ -120,7 +121,7 @@ public class LineWebhookHandler implements HttpHandler {
             return;
         }
 
-        try (Jsonb jsonb = JsonbBuilder.create()) {
+        try (Jsonb jsonb = new JohnzonBuilder().build()) {
             LineWebhook line = jsonb.fromJson(body, LineWebhook.class);
             SlackIncomingWebhookPayload slack = this.lineToSlack(line);
             if (null != slack) {
