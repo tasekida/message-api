@@ -35,9 +35,10 @@ import java.util.logging.LogRecord;
  */
 public class LogFormatter extends Formatter {
 
-    /**
-     *  一般的なログレベルとのマッピング表
-     */
+	/** ログのタイムスタンプフォーマット */
+	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnn");
+
+    /** 一般的なログレベルとのマッピング表 */
     private static final Map<Level, String> loglevel = Collections.unmodifiableMap(new HashMap<>() {{
         put(Level.SEVERE,  "ERROR");
         put(Level.WARNING, "WARN");
@@ -48,9 +49,7 @@ public class LogFormatter extends Formatter {
         put(Level.FINEST,  "DEBUG");
     }});
 
-    /**
-     *  ログ出力ホストアドレス
-     */
+    /** ログ出力ホストアドレス */
     private static String hostname;
     static {
         try {
@@ -65,15 +64,19 @@ public class LogFormatter extends Formatter {
      */
     @Override
     public String format(LogRecord record) {
+    	String[] packageClass = record.getSourceClassName().split("\\.");
         StringBuilder sb = new StringBuilder();
-        sb.append(LocalDateTime.ofInstant(record.getInstant(), ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        sb.append(LocalDateTime.ofInstant(record.getInstant(), ZoneId.systemDefault()).format(formatter));
         sb.append(" ");
         sb.append(hostname);
         sb.append(" ");
         sb.append(loglevel.get(record.getLevel()));
         sb.append(" ");
         sb.append("[");
-        sb.append(record.getSourceClassName());
+        sb.append("Thread-" + record.getThreadID());
+        sb.append("] ");
+        sb.append("[");
+        sb.append(packageClass[packageClass.length-1]);
         sb.append(" ");
         sb.append(record.getSourceMethodName());
         sb.append("] ");

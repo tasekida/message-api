@@ -11,9 +11,8 @@ compileTestJava.options.encoding = 'UTF-8'
 modularity.improveEclipseClasspathFile()
 
 repositories {
-    jcenter()
-    google()
     mavenCentral()
+    google()
 }
 
 dependencies {

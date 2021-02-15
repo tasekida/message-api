@@ -41,7 +41,7 @@ public class MessagingProcess {
     /** ロガー */
     private static final Logger logger = Logger.getLogger(MessagingProcess.class.getName());
 
-    private ExecutorService executorService = Executors.newWorkStealingPool();
+    private ExecutorService executorService = Executors.newWorkStealingPool(3);
 
     public MessagingProcess() throws IOException {
 		Path lockFile = Path.of(this.getClass().getSimpleName() + ".lock");
