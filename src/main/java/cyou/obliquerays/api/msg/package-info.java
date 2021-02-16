@@ -1,4 +1,4 @@
 /**
- * メッセージ送受信のAPI
+ * メッセージ交換用API
  */
 package cyou.obliquerays.api.msg;

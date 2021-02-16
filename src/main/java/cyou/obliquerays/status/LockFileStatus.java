@@ -31,7 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * ファイルによるプログラム起動状態監視
+ * ファイルによるプログラム起動状態管理
  */
 public class LockFileStatus extends Thread {
     /** ロガー */
@@ -48,7 +48,7 @@ public class LockFileStatus extends Thread {
 
 	/**
 	 * コンストラクター
-	 * @param _thread mailスレッド
+	 * @param _thread mainスレッド
 	 * @param _lockFile プロセス実行時存在ファイル
 	 * @throws IOException プロセス実行時存在ファイル操作エラー
 	 */
