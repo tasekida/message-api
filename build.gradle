@@ -5,7 +5,7 @@ plugins {
     id 'org.javamodularity.moduleplugin' version '1.7.0'
 }
 
-wrapper.gradleVersion = '6.8.1'
+wrapper.gradleVersion = '6.8.2'
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 modularity.improveEclipseClasspathFile()
@@ -101,7 +101,7 @@ jib {
         paths = 'gradle/release'
     }
     from {
-        image = 'openjdk:11-jre-slim'
+        image = 'openjdk11-jre-alpine'
     }
     to {
         image = 'msg-transfer:' + version // YOUR_IMAGE_NAME

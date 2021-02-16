@@ -1,0 +1,47 @@
+{
+	"token": "TOKENTOKENTOKEN",
+	"team_id": "TEAM_ID",
+	"api_app_id": "API_APP_ID",
+	"event": {
+		"client_msg_id": "CLIENT_MSG_IDCLIENT_MSG_IDCLIENT_MSG_ID",
+		"type": "message",
+		"text": "テスト",
+		"user": "USERUSERUSER",
+		"ts": "1612911152.000700",
+		"team": "TEAMTEAMTEAM",
+		"blocks": [
+			{
+				"type": "rich_text",
+				"block_id": "NMk",
+				"elements": [
+					{
+						"type": "rich_text_section",
+						"elements": [
+							{
+								"type": "text",
+								"text": "テスト"
+							}
+						]
+					}
+				]
+			}
+		],
+		"channel": "CHANNELCHANNEL",
+		"event_ts": "1612911152.000700",
+		"channel_type": "channel"
+	},
+	"type": "event_callback",
+	"event_id": "EVENT_IDEVENT_ID",
+	"event_time": 1612911152,
+	"authorizations": [
+		{
+			"enterprise_id": null,
+			"team_id": "TEAMTEAMTEAM",
+			"user_id": "USERUSERUSER",
+			"is_bot": true,
+			"is_enterprise_install": false
+		}
+	],
+	"is_ext_shared_channel": false,
+	"event_context": "1-message-T016DL1HFSR-C0174SBUEV6"
+}

@@ -35,7 +35,7 @@ import cyou.obliquerays.api.msg.slack.webhook.SlackReceivingWebhookHandler;
 import cyou.obliquerays.status.LockFileStatus;
 
 /**
- * メッセージAPIプロセスのエントリーポイント
+ * メッセージ交換用APIの永続起動
  */
 public class MessagingProcess {
     /** ロガー */
@@ -95,7 +95,7 @@ public class MessagingProcess {
     }
 
     /**
-     * メッセージAPIプロセスのエントリーポイント
+     * メッセージ交換用APIのエントリーポイント
      * @param args プロセスの引数
      */
     public static void main(String[] args) {

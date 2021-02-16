@@ -1,4 +1,4 @@
 /**
- * @author oblique-rays
+ *  状態管理のライブラリ
  */
 package cyou.obliquerays.status;

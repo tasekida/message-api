@@ -1,0 +1,21 @@
+{
+	"events":[
+		{
+			"type":"message",
+			"replyToken":"REPLYTOKENREPLYTOKENREPLYTOKEN",
+			"source":{
+				"userId":"USERIDUSERIDUSERID",
+				"groupId":"GROUPIDGROUPIDGROUPID",
+				"type":"group"
+			},
+			"timestamp":1612966034063,
+			"mode":"active",
+			"message" :{
+				"type":"text",
+				"id":"IDIDID",
+				"text":"テスト"
+			}
+		}
+	],
+	"destination":"DESTINATIONDESTINATIONDESTINATION"
+}
