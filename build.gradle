@@ -101,10 +101,9 @@ jib {
         paths = 'gradle/release'
     }
     from {
-        image = 'taseki01/openjdk11-jre-alpine'
+        image = 'openjdk11-jre-alpine'
     }
     to {
-        image = 'taseki01/msg-transfer'
-//        image = 'msg-transfer:' + version // YOUR_IMAGE_NAME
+        image = 'msg-transfer:' + version // YOUR_IMAGE_NAME
     }
 }
