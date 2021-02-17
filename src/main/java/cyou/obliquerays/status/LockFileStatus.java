@@ -22,10 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,10 +54,7 @@ public class LockFileStatus extends Thread {
 		this.mainThread = Objects.requireNonNull(_thread);
 		this.lockFile = Objects.requireNonNull(_lockFile).toAbsolutePath().normalize();
 
-		Files.createFile(this.lockFile, PosixFilePermissions.asFileAttribute(
-				Set.of(PosixFilePermission.OWNER_READ
-						,PosixFilePermission.OTHERS_WRITE
-						,PosixFilePermission.OWNER_EXECUTE)));
+		Files.createFile(this.lockFile);
 		logger.log(Level.INFO, "プロセス実行時存在ファイル作成#" + this.lockFile);
 
 		WatchService watchService = FileSystems.getDefault().newWatchService();
@@ -89,13 +83,15 @@ public class LockFileStatus extends Thread {
 			while (this.watchKey.isValid()) {
 				this.watchKey.pollEvents().stream()
 				.filter((watchEvent) -> watchEvent.kind() == StandardWatchEventKinds.ENTRY_DELETE)
-				.filter((watchEvent) -> watchEvent.context().toString().equals(lockFile.getFileName().toString()))
-				.forEach((watchEvent) -> {
-					logger.log(Level.INFO, "プロセス実行時存在ファイルの削除検知#" + watchEvent.context().toString());
+				.map((watchEvent) -> ((Path) watchEvent.context()).toAbsolutePath().normalize())
+				.filter((deleteFile) -> deleteFile.equals(this.lockFile))
+				.forEach((deleteFile) -> {
+					logger.log(Level.INFO, "プロセス実行時存在ファイルの削除検知#" + deleteFile);
 					this.watchKey.cancel();
 					this.mainThread.interrupt();
 				});
-				TimeUnit.SECONDS.sleep(1L);
+				if (this.watchKey.isValid())
+					TimeUnit.SECONDS.sleep(1L);
 			}
 		} catch (InterruptedException e) {
 			logger.log(Level.SEVERE, "待機失敗", e);
